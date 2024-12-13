@@ -13,7 +13,9 @@ class CoreDataProvider {
     let persistentContainer: NSPersistentContainer
     
     private init() {
-        persistentContainer = NSPersistentContainer(name: "RemaindersModel")
+        ValueTransformer.setValueTransformer(UIColorTransformer(), forName: NSValueTransformerName("UIColorTransformer"))
+        
+        persistentContainer = NSPersistentContainer(name: "RemindersModel")
         persistentContainer.loadPersistentStores { description, error in
             if let error {
                 fatalError("Failed to load RemaindersModel: \(error)")

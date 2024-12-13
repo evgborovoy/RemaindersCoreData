@@ -15,7 +15,7 @@ extension MyList {
         return NSFetchRequest<MyList>(entityName: "MyList")
     }
     
-    @NSManaged public var name: String?
+    @NSManaged public var name: String
     @NSManaged public var color: UIColor
 }
 

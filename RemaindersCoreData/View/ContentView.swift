@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @FetchRequest(sortDescriptors: [])
+    private var myListResults: FetchedResults<MyList>
+    
     @State private var isPresented = false
     var body: some View {
         NavigationStack {
             VStack {
+                
+                ListView(MyLists: myListResults)
+
                 Spacer()
+                
                 Button{
                     isPresented = true
                 } label: {
@@ -24,7 +31,11 @@ struct ContentView: View {
             }.sheet(isPresented: $isPresented) {
                 NavigationView {
                     AddNewListView { name, color in
-                        // TODO: Save new list in DB
+                        do {
+                            try ReminderService.saveMyList(name, color)
+                        } catch {
+                            print(error)
+                        }
                     }
                 }
             }
@@ -35,4 +46,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(\.managedObjectContext, CoreDataProvider.shared.persistentContainer.viewContext)
 }
