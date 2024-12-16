@@ -17,8 +17,6 @@ struct ContentView: View {
             VStack {
                 
                 ListView(MyLists: myListResults)
-
-                Spacer()
                 
                 Button{
                     isPresented = true
