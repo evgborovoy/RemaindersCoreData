@@ -9,7 +9,7 @@ import SwiftUI
 
 enum ReminderCellEvents {
     case onInfo
-    case onCheckedChange(Reminder)
+    case onCheckedChange(Reminder, Bool)
     case onSelect(Reminder)
 }
 
@@ -18,6 +18,7 @@ struct ReminderCellView: View {
     
     let reminder: Reminder
     let onEvent: (ReminderCellEvents) -> Void
+    let delay = Delay()
     
     private func formatDate(_ date: Date) -> String {
         if date.isToday {
@@ -35,7 +36,12 @@ struct ReminderCellView: View {
                 .opacity(0.5)
                 .onTapGesture {
                     checked.toggle()
-                    onEvent(.onCheckedChange(reminder))
+                    
+                    delay.cancel()
+                    
+                    delay.performWork {
+                        onEvent(.onCheckedChange(reminder, checked))
+                    }
                 }
             
             VStack(alignment: .leading) {
