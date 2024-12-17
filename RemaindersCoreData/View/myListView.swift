@@ -1,5 +1,5 @@
 //
-//  ListView.swift
+//  myListView.swift
 //  RemaindersCoreData
 //
 //  Created by Evgeniy Borovoy on 12/13/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ListView: View {
+struct myListView: View {
     let MyLists: FetchedResults<MyList>
     
     var body: some View {
@@ -20,7 +20,7 @@ struct ListView: View {
                 ForEach(MyLists) { myList in
                     NavigationLink(value: myList) {
                         VStack {
-                            ListCellView(myList: myList)
+                            myListCellView(myList: myList)
                                 .font(.title3)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.leading, 10)
@@ -41,5 +41,5 @@ struct ListView: View {
 }
 
 //#Preview {
-//    ListView()
+//    myListView()
 //}

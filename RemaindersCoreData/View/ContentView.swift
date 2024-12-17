@@ -11,22 +11,30 @@ struct ContentView: View {
     @FetchRequest(sortDescriptors: [])
     private var myListResults: FetchedResults<MyList>
     
+    @FetchRequest(sortDescriptors: [])
+    private var searchResults: FetchedResults<Reminder>
+    
     @State private var isPresented = false
+    @State private var search = ""
+    @State private var searching = false
+    
     var body: some View {
         NavigationStack {
-            VStack {
-                
-                ListView(MyLists: myListResults)
-                
-                Button{
-                    isPresented = true
-                } label: {
-                    Text("Add List")
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                        .font(.headline)
+                VStack {
+                    ScrollView {
+                    myListView(MyLists: myListResults)
+                    
+                    Button{
+                        isPresented = true
+                    } label: {
+                        Text("Add List")
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .font(.headline)
+                    }
+                    .padding()
                 }
-                .padding()
-            }.sheet(isPresented: $isPresented) {
+            }
+            .sheet(isPresented: $isPresented) {
                 NavigationView {
                     AddNewListView { name, color in
                         do {
@@ -37,8 +45,19 @@ struct ContentView: View {
                     }
                 }
             }
+            .listStyle(.plain)
+            .onChange(of: search) {
+                searching = !search.isEmpty ? true : false
+                searchResults.nsPredicate = ReminderService.getRemindersBySearch(search).predicate
+            }
+            .overlay(alignment: .center) {
+                        ReminderListView(reminders: searchResults)
+                            .opacity(searching ? 1 : 0)
+            }
+            .padding()
+            .navigationTitle("Reminders")
         }
-        .padding()
+        .searchable(text: $search)
     }
 }
 

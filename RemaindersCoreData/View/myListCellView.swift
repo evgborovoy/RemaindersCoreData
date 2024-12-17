@@ -1,5 +1,5 @@
 //
-//  ListCellView.swift
+//  myListCellView.swift
 //  RemaindersCoreData
 //
 //  Created by Evgeniy Borovoy on 12/13/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ListCellView: View {
+struct myListCellView: View {
     let myList: MyList
     
     var body: some View {
@@ -27,5 +27,5 @@ struct ListCellView: View {
 }
 
 #Preview {
-    ListCellView(myList: PreviewData.myList)
+    myListCellView(myList: PreviewData.myList)
 }

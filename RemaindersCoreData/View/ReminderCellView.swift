@@ -17,6 +17,7 @@ struct ReminderCellView: View {
     @State private var checked: Bool = false
     
     let reminder: Reminder
+    let isSelected: Bool
     let onEvent: (ReminderCellEvents) -> Void
     let delay = Delay()
     
@@ -45,9 +46,11 @@ struct ReminderCellView: View {
                 }
             
             VStack(alignment: .leading) {
+                // MARK: Title
                 Text(reminder.title ?? "")
                     .font(.headline)
                 
+                // MARK: Notes
                 if let notes = reminder.notes, !notes.isEmpty {
                     Text(notes)
                         .font(.caption)
@@ -55,10 +58,12 @@ struct ReminderCellView: View {
                 }
                 
                 HStack {
+                    // MARK: Date
                     if let reminderDate = reminder.reminderDate {
                         Text(formatDate(reminderDate))
                     }
                     
+                    // MARK: Time
                     if let reminderTime = reminder.reminderTime {
                         Text(reminderTime.formatted(date: .omitted, time: .shortened))
                     }
@@ -69,10 +74,16 @@ struct ReminderCellView: View {
             }
             
             Spacer()
+            
+            // MARK: Info Button
             Image(systemName: "info.circle.fill")
+                .opacity(isSelected ? 1 : 0)
                 .onTapGesture {
                     onEvent(.onInfo)
                 }
+        }
+        .onAppear {
+            checked = reminder.isCompleted
         }
         .contentShape(Rectangle())
         .onTapGesture {
@@ -82,5 +93,5 @@ struct ReminderCellView: View {
 }
 
 #Preview {
-    ReminderCellView(reminder: PreviewData.reminder, onEvent: { _ in })
+    ReminderCellView(reminder: PreviewData.reminder,isSelected: false, onEvent: { _ in })
 }

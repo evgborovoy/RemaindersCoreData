@@ -12,6 +12,11 @@ struct ReminderDetailView: View {
     @Binding var reminder: Reminder
     
     @Environment(\.dismiss) private var dismiss
+    
+    private var isFormValid: Bool {
+        !editConfig.title.isEmpty
+    }
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -23,13 +28,12 @@ struct ReminderDetailView: View {
                         TextField("Notes", text: $editConfig.notes ?? "")
                     }
                     
-                    // MARK: Date, Time and List
                     Section {
                         Toggle(isOn: $editConfig.hasDate) {
                             Image(systemName: "calendar")
                                 .foregroundStyle(editConfig.hasDate ? .green : .red)
                         }
-                        
+                        // MARK: Date
                         if editConfig.hasDate {
                             DatePicker("Select Date", selection: $editConfig.reminderDate ?? Date(), displayedComponents: .date)
                         }
@@ -38,11 +42,12 @@ struct ReminderDetailView: View {
                             Image(systemName: "clock")
                                 .foregroundStyle(.blue)
                         }
-                        
+                        // MARK: Time
                         if editConfig.hasTime {
                             DatePicker("Select Time", selection: $editConfig.reminderTime ?? Date(), displayedComponents: .hourAndMinute)
                         }
                         
+                        // MARK: List
                         Section {
                             NavigationLink {
                                 SelectListView(selectedList: $reminder.list )
@@ -55,7 +60,16 @@ struct ReminderDetailView: View {
                             }
                         }
                     }
-                    
+                    .onChange(of: editConfig.hasDate) {
+                        if editConfig.hasDate {
+                            editConfig.reminderDate = Date()
+                        }
+                    }
+                    .onChange(of: editConfig.hasTime) {
+                        if editConfig.hasTime {
+                            editConfig.reminderTime = Date()
+                        }
+                    }
                 }
             }
             .onAppear {
@@ -64,19 +78,29 @@ struct ReminderDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("Details")
-                    
                 }
                 
+                // MARK: Cancel Button
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         dismiss()
                     }
                 }
                 
+                // MARK: Done Button
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        
+                        do {
+                            let _ = try ReminderService.updateReminder(
+                                reminder: reminder,
+                                editConfig: editConfig
+                            )
+                        } catch {
+                            print(error)
+                        }
+                        dismiss()
                     }
+                    .disabled(!isFormValid)
                 }
             }
         }
