@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+enum ReminderStatType {
+    case today
+    case scheduled
+    case completed
+    case all
+}
+
 struct ReminderStatsValues {
     var todayCount = 0
     var scheduledCount = 0
